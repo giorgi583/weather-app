@@ -13,10 +13,64 @@
     <input type="text" placeholder="enter city name" spellcheck="false">
     <button aria-label="search icon"><ion-icon class="search_icon" name="search-outline"></ion-icon></button>
 </div>
+<div class="error"></div>
+<div class="weather">
+    <img src="images/rain.png" alt="rainy weather icon" class="weather_icon">
+    <h1 class="temp">22°C</h1>
+    <h2 class="city">New York</h2>
+    <div class="details">
+        <div class="col">
+            <img src="./images/humidity.png" alt="humidity icon">
+            <div>
+                <p class="humidity">40%</p>
+                <p>Humidity</p>
+            </div>
+        </div>  
+        <div class="col">
+            <img src="./images/wind.png" alt="wind icon">
+            <div>
+                <p class="wind">25 km/h</p>
+                <p>Wind Speed</p>
+            </div>
+        </div>
+    </div>
+</div>
     </div>
 
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script>
+    const apiKey = '6a158560222e8fa593052d805727dc76';
+    const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?units=metric';
+const input = document.querySelector('.search input');
+    async function checkWeather() {
+        try {const response = await fetch(`${apiUrl}&q=${input.value}&appid=${apiKey}`);
+        const data = await response.json();
+        console.log(data);
+        const temp = document.querySelector('.temp');
+        const city = document.querySelector('.city');
+        const humidity = document.querySelector('.humidity');
+        const wind = document.querySelector('.wind');
+        humidity.innerHTML = `${data.main.humidity}%`;
+        wind.innerHTML = `${data.wind.speed} km/h`;
+        temp.innerHTML = `${Math.round(data.main.temp)}°C`;
+        city.innerHTML = data.name;
+        document.querySelector('.weather_icon').src = `images/${data.weather[0].main.toLowerCase()}.png`; 
+    document.querySelector('.weather').style.display = 'block';
+        document.querySelector('.error').innerHTML = '';
+        }
+        catch (error) {
+            document.querySelector('.error').innerHTML = 'City not found';
+        }
+    }
+    input.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            checkWeather();
+        }
+    });
+    document.querySelector('.search button').addEventListener('click', checkWeather);
+    
+</script>
 </body>
 </html>
